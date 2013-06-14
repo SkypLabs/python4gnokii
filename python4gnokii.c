@@ -117,11 +117,42 @@ static PyObject *gnokii_answercall(PyObject *self, PyObject *args)
 	Py_RETURN_NONE;
 }
 
+static PyObject *gnokii_senddtmf(PyObject *self, PyObject *args)
+{
+	const char *cmd;
+	gn_error error;
+
+	if (!connected)
+	{
+		PyErr_SetString(GnokiiError, "[x] Not connected !");
+		return NULL;
+	}
+
+	if (!PyArg_ParseTuple(args, "s", &cmd))
+		return NULL;
+
+	gn_data_clear(data);
+	data->dtmf_string = cmd;
+
+	error = gn_sm_functions(GN_OP_SendDTMF, data, state);
+
+	if (error != GN_ERR_NONE)
+	{
+		PyErr_SetString(GnokiiError, "[x] Senddtmf failed");
+		return NULL;
+	}
+
+	Py_RETURN_NONE;
+}
+
+/* Settings */
+
 static PyMethodDef GnokiiMethods[] = {
 	{"open", gnokii_open, METH_VARARGS, "Initiate connection to phone."},
 	{"close", gnokii_close, METH_VARARGS, "Close connection to phone."},
 	{"dialvoice", gnokii_dialvoice, METH_VARARGS, "Initiate voice call."},
 	{"answercall", gnokii_answercall, METH_VARARGS, "Answer an incoming call."},
+	{"senddtmf", gnokii_senddtmf, METH_VARARGS, "Send DTMF sequence."},
 	{NULL, NULL, 0, NULL}
 };
 

@@ -81,7 +81,7 @@ static PyObject *gnokii_dialvoice(PyObject *self, PyObject *args)
 
 static PyObject *gnokii_answercall(PyObject *self, PyObject *args)
 {
-	const char *callid;
+	const char callid;
     	gn_call_info callinfo;
 	gn_error error;
 
@@ -95,7 +95,7 @@ static PyObject *gnokii_answercall(PyObject *self, PyObject *args)
 		return NULL;
 
 	memset(&callinfo, 0, sizeof(callinfo));
-	callinfo.call_id = strtol(callid, NULL, 10);
+	callinfo.call_id = callid;
 
 	if (callinfo.call_id < 0)
 	{

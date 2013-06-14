@@ -145,6 +145,44 @@ static PyObject *gnokii_senddtmf(PyObject *self, PyObject *args)
 	Py_RETURN_NONE;
 }
 
+static PyObject *gnokii_hangup(PyObject *self, PyObject *args)
+{
+	const char callid;
+	gn_call_info callinfo;
+	gn_error error;
+
+	if (!connected)
+	{
+		PyErr_SetString(GnokiiError, "[x] Not connected !");
+		return NULL;
+	}
+
+	if (!PyArg_ParseTuple(args, "b", &callid))
+		return NULL;
+
+	memset(&callinfo, 0, sizeof(callinfo));
+	callinfo.call_id = callid;
+
+	if (callinfo.call_id < 0)
+	{
+		PyErr_SetString(GnokiiError, "[x] Invalid call id");
+		return NULL;
+	}
+
+	gn_data_clear(data);
+	data->call_info = &callinfo;
+
+	error = gn_sm_functions(GN_OP_CancelCall, data, state);
+
+	if (error != GN_ERR_NONE)
+	{
+		PyErr_SetString(GnokiiError, "[x] Hungup failed");
+		return NULL;
+	}
+	
+	Py_RETURN_NONE;
+}
+
 /* Settings */
 
 static PyMethodDef GnokiiMethods[] = {
@@ -153,6 +191,7 @@ static PyMethodDef GnokiiMethods[] = {
 	{"dialvoice", gnokii_dialvoice, METH_VARARGS, "Initiate voice call."},
 	{"answercall", gnokii_answercall, METH_VARARGS, "Answer an incoming call."},
 	{"senddtmf", gnokii_senddtmf, METH_VARARGS, "Send DTMF sequence."},
+	{"hangup", gnokii_hangup, METH_VARARGS, "Hangup an incoming call or an already established call."},
 	{NULL, NULL, 0, NULL}
 };
 

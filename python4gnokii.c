@@ -183,6 +183,37 @@ static PyObject *gnokii_hangup(PyObject *self, PyObject *args)
 	Py_RETURN_NONE;
 }
 
+/* SMS */
+
+static PyObject *gnokii_getnumber(PyObject *self, PyObject *args)
+{
+	const char *number;
+	gn_gsm_number_type type;
+
+	if (!PyArg_ParseTuple(args, "s", &number))
+		return NULL;
+
+	if (!number)
+		return Py_BuildValue("i", GN_GSM_NUMBER_Unknown);
+	if (*number == '+')
+	{
+		type = GN_GSM_NUMBER_International;
+		number++;
+	}
+	else
+		type = GN_GSM_NUMBER_Unknown;
+
+	while (*number)
+	{
+		if (!isdigit(*number))
+			Py_BuildValue("i", GN_GSM_NUMBER_Alphanumeric);
+
+		number++;
+	}
+
+	return Py_BuildValue("i", type);
+}
+
 /* Settings */
 
 static PyMethodDef GnokiiMethods[] = {
@@ -192,6 +223,7 @@ static PyMethodDef GnokiiMethods[] = {
 	{"answercall", gnokii_answercall, METH_VARARGS, "Answer an incoming call."},
 	{"senddtmf", gnokii_senddtmf, METH_VARARGS, "Send DTMF sequence."},
 	{"hangup", gnokii_hangup, METH_VARARGS, "Hangup an incoming call or an already established call."},
+	{"getnumber", gnokii_getnumber, METH_VARARGS, "Return the type of the number"},
 	{NULL, NULL, 0, NULL}
 };
 
@@ -208,4 +240,12 @@ initgnokii(void)
 	GnokiiError = PyErr_NewException("gnokii.error", NULL, NULL);
 	Py_INCREF(GnokiiError);
 	PyModule_AddObject(m, "error", GnokiiError);
+
+	PyModule_AddIntConstant(m, "gsm_number_unknown", GN_GSM_NUMBER_Unknown);
+	PyModule_AddIntConstant(m, "gsm_number_international", GN_GSM_NUMBER_International);
+	PyModule_AddIntConstant(m, "gsm_number_national", GN_GSM_NUMBER_National);
+	PyModule_AddIntConstant(m, "gsm_number_network", GN_GSM_NUMBER_Network);
+	PyModule_AddIntConstant(m, "gsm_number_subscriber", GN_GSM_NUMBER_Subscriber);
+	PyModule_AddIntConstant(m, "gsm_number_alphanumeric", GN_GSM_NUMBER_Alphanumeric);
+	PyModule_AddIntConstant(m, "gsm_number_abbreviated", GN_GSM_NUMBER_Abbreviated);
 }

@@ -23,7 +23,7 @@ static PyObject *gnokii_open(PyObject *self, PyObject *args)
 	
 	if (GN_ERR_NONE != error)
 	{
-		PyErr_SetString(GnokiiError, "[x] Open command failed");
+		PyErr_SetString(GnokiiError, "Connection failed");
 		return NULL;
 	}
 
@@ -55,7 +55,7 @@ static PyObject *gnokii_dialvoice(PyObject *self, PyObject *args)
 
 	if (!connected)
 	{
-		PyErr_SetString(GnokiiError, "[x] Not connected !");
+		PyErr_SetString(GnokiiError, "Not connected");
 		return NULL;
 	}
 
@@ -72,7 +72,7 @@ static PyObject *gnokii_dialvoice(PyObject *self, PyObject *args)
 
 	if ((error = gn_call_dial(&call_id, data, state)) != GN_ERR_NONE)
 	{
-		PyErr_SetString(GnokiiError, "[x] Dialvoice failed");
+		PyErr_SetString(GnokiiError, "Call failed");
 		return NULL;
 	}
 
@@ -87,7 +87,7 @@ static PyObject *gnokii_answercall(PyObject *self, PyObject *args)
 
 	if (!connected)
 	{
-		PyErr_SetString(GnokiiError, "[x] Not connected !");
+		PyErr_SetString(GnokiiError, "Not connected");
 		return NULL;
 	}
 
@@ -99,7 +99,7 @@ static PyObject *gnokii_answercall(PyObject *self, PyObject *args)
 
 	if (callinfo.call_id < 0)
 	{
-		PyErr_SetString(GnokiiError, "[x] Invalid call id");
+		PyErr_SetString(GnokiiError, "Invalid call id");
 		return NULL;
 	}
 
@@ -110,7 +110,7 @@ static PyObject *gnokii_answercall(PyObject *self, PyObject *args)
 
 	if (error != GN_ERR_NONE)
 	{
-		PyErr_SetString(GnokiiError, "[x] Answercall failed");
+		PyErr_SetString(GnokiiError, "Answer call failed");
 		return NULL;
 	}
 
@@ -124,7 +124,7 @@ static PyObject *gnokii_senddtmf(PyObject *self, PyObject *args)
 
 	if (!connected)
 	{
-		PyErr_SetString(GnokiiError, "[x] Not connected !");
+		PyErr_SetString(GnokiiError, "Not connected");
 		return NULL;
 	}
 
@@ -138,7 +138,7 @@ static PyObject *gnokii_senddtmf(PyObject *self, PyObject *args)
 
 	if (error != GN_ERR_NONE)
 	{
-		PyErr_SetString(GnokiiError, "[x] Senddtmf failed");
+		PyErr_SetString(GnokiiError, "Sending DTMF failed");
 		return NULL;
 	}
 
@@ -153,7 +153,7 @@ static PyObject *gnokii_hangup(PyObject *self, PyObject *args)
 
 	if (!connected)
 	{
-		PyErr_SetString(GnokiiError, "[x] Not connected !");
+		PyErr_SetString(GnokiiError, "Not connected");
 		return NULL;
 	}
 
@@ -165,7 +165,7 @@ static PyObject *gnokii_hangup(PyObject *self, PyObject *args)
 
 	if (callinfo.call_id < 0)
 	{
-		PyErr_SetString(GnokiiError, "[x] Invalid call id");
+		PyErr_SetString(GnokiiError, "Invalid call id");
 		return NULL;
 	}
 
@@ -176,7 +176,7 @@ static PyObject *gnokii_hangup(PyObject *self, PyObject *args)
 
 	if (error != GN_ERR_NONE)
 	{
-		PyErr_SetString(GnokiiError, "[x] Hungup failed");
+		PyErr_SetString(GnokiiError, "Hung up failed");
 		return NULL;
 	}
 	
@@ -225,7 +225,7 @@ static PyObject *gnokii_deletesms(PyObject *self, PyObject *args)
 
 	if (!connected)
 	{
-		PyErr_SetString(GnokiiError, "[x] Not connected !");
+		PyErr_SetString(GnokiiError, "Not connected");
 		return NULL;
 	}
 
@@ -239,19 +239,19 @@ static PyObject *gnokii_deletesms(PyObject *self, PyObject *args)
 
 	if (message.memory_type == GN_MT_XX)
         {
-		PyErr_SetString(GnokiiError, "[x] Unknown memory type");
+		PyErr_SetString(GnokiiError, "Unknown memory type");
 		return NULL;
         }
 
 	if (errno || start < 0)
 	{
-		PyErr_SetString(GnokiiError, "[x] Invalid start message");
+		PyErr_SetString(GnokiiError, "Invalid start message");
 		return NULL;
 	}
 
 	if (errno || end < 0)
 	{
-		PyErr_SetString(GnokiiError, "[x] Invalid end message");
+		PyErr_SetString(GnokiiError, "Invalid end message");
 		return NULL;
 	}
 
@@ -271,7 +271,7 @@ static PyObject *gnokii_deletesms(PyObject *self, PyObject *args)
 			if ((error == GN_ERR_INVALIDLOCATION) && (end == INT_MAX) && (count > start))
 				return GN_ERR_NONE;
 
-			PyErr_SetString(GnokiiError, "[x] Deleting SMS failed");
+			PyErr_SetString(GnokiiError, "Deleting SMS failed");
 			return NULL;
                 }
         }

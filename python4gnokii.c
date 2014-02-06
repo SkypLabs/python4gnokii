@@ -1,7 +1,7 @@
-#include <Python.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <Python.h>
 #include <gnokii.h>
 
 struct gn_statemachine *state = NULL;
@@ -214,6 +214,71 @@ static PyObject *gnokii_getnumber(PyObject *self, PyObject *args)
 	return Py_BuildValue("i", type);
 }
 
+static PyObject *gnokii_deletesms(PyObject *self, PyObject *args)
+{
+	gn_sms message;
+	gn_sms_folder folder;
+	gn_sms_folder_list folderlist;
+	char *memory_type_string = NULL;
+	int start, end, count;
+	gn_error error = GN_ERR_NONE;
+
+	if (!connected)
+	{
+		PyErr_SetString(GnokiiError, "[x] Not connected !");
+		return NULL;
+	}
+
+	if (!PyArg_ParseTuple(args, "s i i", memory_type_string, &start, &end))
+	{
+		if (!PyArg_ParseTuple(args, "s i", memory_type_string, &start))
+			return NULL;
+	}
+
+	message.memory_type = gn_str2memory_type(memory_type_string);
+
+	if (message.memory_type == GN_MT_XX)
+        {
+		PyErr_SetString(GnokiiError, "[x] Unknown memory type");
+		return NULL;
+        }
+
+	if (errno || start < 0)
+	{
+		PyErr_SetString(GnokiiError, "[x] Invalid start message");
+		return NULL;
+	}
+
+	if (errno || end < 0)
+	{
+		PyErr_SetString(GnokiiError, "[x] Invalid end message");
+		return NULL;
+	}
+
+	/* Now delete the requested entries. */
+	for (count = start; count <= end; count++)
+	{
+		message.number = count;
+		data->sms = &message;
+		data->sms_folder = &folder;
+		data->sms_folder_list = &folderlist;
+		error = gn_sms_delete(data, state);
+
+		if (error == GN_ERR_NONE)
+			Py_RETURN_NONE;
+		else
+		{
+			if ((error == GN_ERR_INVALIDLOCATION) && (end == INT_MAX) && (count > start))
+				return GN_ERR_NONE;
+
+			PyErr_SetString(GnokiiError, "[x] Deleting SMS failed");
+			return NULL;
+                }
+        }
+
+	Py_RETURN_NONE;
+}
+
 /* Settings */
 
 static PyMethodDef GnokiiMethods[] = {
@@ -223,7 +288,8 @@ static PyMethodDef GnokiiMethods[] = {
 	{"answercall", gnokii_answercall, METH_VARARGS, "Answer an incoming call."},
 	{"senddtmf", gnokii_senddtmf, METH_VARARGS, "Send DTMF sequence."},
 	{"hangup", gnokii_hangup, METH_VARARGS, "Hangup an incoming call or an already established call."},
-	{"getnumber", gnokii_getnumber, METH_VARARGS, "Return the type of the number"},
+	{"getnumber", gnokii_getnumber, METH_VARARGS, "Return the type of the number."},
+	{"deletesms", gnokii_deletesms, METH_VARARGS, "Delete SMS message."},
 	{NULL, NULL, 0, NULL}
 };
 

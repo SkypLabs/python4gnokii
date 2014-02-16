@@ -14,6 +14,9 @@ static int connected = 0;
 
 static PyObject *gnokii_open(PyObject *self, PyObject *args)
 {
+	if (connected == 1)
+		Py_RETURN_NONE;
+
 	gn_error error;
 	
 	error = gn_lib_phoneprofile_load(NULL, &state);
@@ -35,6 +38,9 @@ static PyObject *gnokii_open(PyObject *self, PyObject *args)
 
 static PyObject *gnokii_close(PyObject *self, PyObject *args)
 {
+	if (state == NULL)
+		Py_RETURN_NONE;
+
 	gn_lib_phone_close(state);
 	gn_lib_phoneprofile_free(&state);
 	gn_lib_library_free();

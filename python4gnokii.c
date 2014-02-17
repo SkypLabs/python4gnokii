@@ -8,46 +8,33 @@ struct gn_statemachine *state = NULL;
 static gn_data *data;
 static PyObject *GnokiiError;
 
-static int connected = 0;
-
 /* All */
 
-static PyObject *gnokii_open(PyObject *self, PyObject *args)
+unsigned char gnokii_open(void)
 {
-	if (connected == 1)
-		Py_RETURN_NONE;
-
 	gn_error error;
-	
+
 	error = gn_lib_phoneprofile_load(NULL, &state);
 
 	if (GN_ERR_NONE == error)
 		error = gn_lib_phone_open(state);
-	
+
 	if (GN_ERR_NONE != error)
-	{
-		PyErr_SetString(GnokiiError, "Connection failed");
-		return NULL;
-	}
+		return 1;
 
 	data = &state->sm_data;
-	connected = 1;
 
-	Py_RETURN_NONE;
+	return 0;
 }
 
-static PyObject *gnokii_close(PyObject *self, PyObject *args)
+void gnokii_close(void)
 {
 	if (state == NULL)
-		Py_RETURN_NONE;
+		return;
 
 	gn_lib_phone_close(state);
 	gn_lib_phoneprofile_free(&state);
 	gn_lib_library_free();
-
-	connected = 0;
-
-	Py_RETURN_NONE;
 }
 
 /* Dial */
@@ -59,7 +46,7 @@ static PyObject *gnokii_dialvoice(PyObject *self, PyObject *args)
 	gn_error error;
 	int call_id;
 
-	if (!connected)
+	if (gnokii_open() != 0)
 	{
 		PyErr_SetString(GnokiiError, "Not connected");
 		return NULL;
@@ -82,6 +69,8 @@ static PyObject *gnokii_dialvoice(PyObject *self, PyObject *args)
 		return NULL;
 	}
 
+	gnokii_close();
+
 	return Py_BuildValue("i", call_info.call_id);
 }
 
@@ -91,7 +80,7 @@ static PyObject *gnokii_answercall(PyObject *self, PyObject *args)
     	gn_call_info callinfo;
 	gn_error error;
 
-	if (!connected)
+	if (gnokii_open() != 0)
 	{
 		PyErr_SetString(GnokiiError, "Not connected");
 		return NULL;
@@ -120,6 +109,8 @@ static PyObject *gnokii_answercall(PyObject *self, PyObject *args)
 		return NULL;
 	}
 
+	gnokii_close();
+
 	Py_RETURN_NONE;
 }
 
@@ -128,7 +119,7 @@ static PyObject *gnokii_senddtmf(PyObject *self, PyObject *args)
 	const char *cmd;
 	gn_error error;
 
-	if (!connected)
+	if (gnokii_open() != 0)
 	{
 		PyErr_SetString(GnokiiError, "Not connected");
 		return NULL;
@@ -148,6 +139,8 @@ static PyObject *gnokii_senddtmf(PyObject *self, PyObject *args)
 		return NULL;
 	}
 
+	gnokii_close();
+
 	Py_RETURN_NONE;
 }
 
@@ -157,7 +150,7 @@ static PyObject *gnokii_hangup(PyObject *self, PyObject *args)
 	gn_call_info callinfo;
 	gn_error error;
 
-	if (!connected)
+	if (gnokii_open() != 0)
 	{
 		PyErr_SetString(GnokiiError, "Not connected");
 		return NULL;
@@ -185,40 +178,13 @@ static PyObject *gnokii_hangup(PyObject *self, PyObject *args)
 		PyErr_SetString(GnokiiError, "Hung up failed");
 		return NULL;
 	}
-	
+
+	gnokii_close();
+
 	Py_RETURN_NONE;
 }
 
 /* SMS */
-
-static PyObject *gnokii_getnumber(PyObject *self, PyObject *args)
-{
-	const char *number;
-	gn_gsm_number_type type;
-
-	if (!PyArg_ParseTuple(args, "s", &number))
-		return NULL;
-
-	if (!number)
-		return Py_BuildValue("i", GN_GSM_NUMBER_Unknown);
-	if (*number == '+')
-	{
-		type = GN_GSM_NUMBER_International;
-		number++;
-	}
-	else
-		type = GN_GSM_NUMBER_Unknown;
-
-	while (*number)
-	{
-		if (!isdigit(*number))
-			Py_BuildValue("i", GN_GSM_NUMBER_Alphanumeric);
-
-		number++;
-	}
-
-	return Py_BuildValue("i", type);
-}
 
 static PyObject *gnokii_deletesms(PyObject *self, PyObject *args)
 {
@@ -229,7 +195,7 @@ static PyObject *gnokii_deletesms(PyObject *self, PyObject *args)
 	int start, end, count;
 	gn_error error = GN_ERR_NONE;
 
-	if (!connected)
+	if (gnokii_open() != 0)
 	{
 		PyErr_SetString(GnokiiError, "Not connected");
 		return NULL;
@@ -261,7 +227,6 @@ static PyObject *gnokii_deletesms(PyObject *self, PyObject *args)
 		return NULL;
 	}
 
-	/* Now delete the requested entries. */
 	for (count = start; count <= end; count++)
 	{
 		message.number = count;
@@ -282,19 +247,18 @@ static PyObject *gnokii_deletesms(PyObject *self, PyObject *args)
                 }
         }
 
+	gnokii_close();
+
 	Py_RETURN_NONE;
 }
 
 /* Settings */
 
 static PyMethodDef GnokiiMethods[] = {
-	{"open", gnokii_open, METH_VARARGS, "Initiate connection to phone."},
-	{"close", gnokii_close, METH_VARARGS, "Close connection to phone."},
 	{"dialvoice", gnokii_dialvoice, METH_VARARGS, "Initiate voice call."},
 	{"answercall", gnokii_answercall, METH_VARARGS, "Answer an incoming call."},
 	{"senddtmf", gnokii_senddtmf, METH_VARARGS, "Send DTMF sequence."},
 	{"hangup", gnokii_hangup, METH_VARARGS, "Hangup an incoming call or an already established call."},
-	{"getnumber", gnokii_getnumber, METH_VARARGS, "Return the type of the number."},
 	{"deletesms", gnokii_deletesms, METH_VARARGS, "Delete SMS message."},
 	{NULL, NULL, 0, NULL}
 };
@@ -312,12 +276,4 @@ initgnokii(void)
 	GnokiiError = PyErr_NewException("gnokii.error", NULL, NULL);
 	Py_INCREF(GnokiiError);
 	PyModule_AddObject(m, "error", GnokiiError);
-
-	PyModule_AddIntConstant(m, "gsm_number_unknown", GN_GSM_NUMBER_Unknown);
-	PyModule_AddIntConstant(m, "gsm_number_international", GN_GSM_NUMBER_International);
-	PyModule_AddIntConstant(m, "gsm_number_national", GN_GSM_NUMBER_National);
-	PyModule_AddIntConstant(m, "gsm_number_network", GN_GSM_NUMBER_Network);
-	PyModule_AddIntConstant(m, "gsm_number_subscriber", GN_GSM_NUMBER_Subscriber);
-	PyModule_AddIntConstant(m, "gsm_number_alphanumeric", GN_GSM_NUMBER_Alphanumeric);
-	PyModule_AddIntConstant(m, "gsm_number_abbreviated", GN_GSM_NUMBER_Abbreviated);
 }

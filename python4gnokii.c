@@ -229,7 +229,7 @@ static PyObject *gnokii_sendsms(PyObject *self, PyObject *args)
 
 	gn_sms_default_submit(&sms);
 
-	if (sizeof(message) > (sizeof(sms.user_data[0].u.text) - 1))
+	if ((strlen(message) + 1) > sizeof(sms.user_data[0].u.text))
 	{
 		PyErr_SetString(GnokiiError, "Message too long");
 		return NULL;
@@ -263,8 +263,8 @@ static PyObject *gnokii_sendsms(PyObject *self, PyObject *args)
 	if (!sms.smsc.type)
 		sms.smsc.type = GN_GSM_NUMBER_Unknown;
 
-	sms.user_data[0].length = sizeof(message);
-	strncpy(sms.user_data[0].u.text, message, sizeof(message));
+	sms.user_data[0].length = strlen(message) + 1;
+	strncpy(sms.user_data[0].u.text, message, strlen(message) + 1);
 	sms.user_data[0].type = GN_SMS_DATA_Text;
 
 	if ((sms.dcs.u.general.alphabet != GN_SMS_DCS_8bit) && !gn_char_def_alphabet(sms.user_data[0].u.text))

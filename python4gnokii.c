@@ -9,8 +9,13 @@ struct gn_statemachine *state = NULL;
 static gn_data *data;
 static PyObject *GnokiiError;
 
-/* All */
+/* ---------- All ---------- */
 
+/*
+	Establish connection to the device.
+
+	Return 1 if succeed, else 0.
+*/
 unsigned char gnokii_open(void)
 {
 	gn_error error;
@@ -28,6 +33,9 @@ unsigned char gnokii_open(void)
 	return 0;
 }
 
+/*
+	Close connection with the device.
+*/
 void gnokii_close(void)
 {
 	if (state == NULL)
@@ -38,6 +46,9 @@ void gnokii_close(void)
 	gn_lib_library_free();
 }
 
+/*
+	Return the type of the number given as parameter.
+*/
 gn_gsm_number_type get_number_type(const char *number)
 {
 	gn_gsm_number_type type;
@@ -63,8 +74,13 @@ gn_gsm_number_type get_number_type(const char *number)
 	return type;
 }
 
-/* Dial */
+/* ---------- Dial ---------- */
 
+/*
+	Initiate voice call.
+
+	Return the call ID.
+*/
 static PyObject *gnokii_dialvoice(PyObject *self, PyObject *args)
 {
 	const char *number;
@@ -101,6 +117,9 @@ static PyObject *gnokii_dialvoice(PyObject *self, PyObject *args)
 	return Py_BuildValue("i", call_info.call_id);
 }
 
+/*
+	Answer an incoming call using the call ID.
+*/
 static PyObject *gnokii_answercall(PyObject *self, PyObject *args)
 {
 	const char callid;
@@ -143,6 +162,9 @@ static PyObject *gnokii_answercall(PyObject *self, PyObject *args)
 	Py_RETURN_NONE;
 }
 
+/*
+	Send the DTMF sequence given as parameter.
+*/
 static PyObject *gnokii_senddtmf(PyObject *self, PyObject *args)
 {
 	const char *cmd;
@@ -174,6 +196,9 @@ static PyObject *gnokii_senddtmf(PyObject *self, PyObject *args)
 	Py_RETURN_NONE;
 }
 
+/*
+	Hangup an incoming call or an already established call using the call ID.
+*/
 static PyObject *gnokii_hangup(PyObject *self, PyObject *args)
 {
 	const char callid;
@@ -216,8 +241,11 @@ static PyObject *gnokii_hangup(PyObject *self, PyObject *args)
 	Py_RETURN_NONE;
 }
 
-/* SMS */
+/* ---------- SMS ---------- */
 
+/*
+	Send an SMS message.
+*/
 static PyObject *gnokii_sendsms(PyObject *self, PyObject *args)
 {
 	gn_sms sms;
@@ -298,6 +326,9 @@ static PyObject *gnokii_sendsms(PyObject *self, PyObject *args)
 	Py_RETURN_NONE;
 }
 
+/*
+	Get SMS message(s) from specified memory type.
+*/
 static PyObject *gnokii_getsms(PyObject *self, PyObject *args)
 {
 	gn_sms_folder folder;
@@ -452,6 +483,9 @@ static PyObject *gnokii_getsms(PyObject *self, PyObject *args)
 	return messages;
 }
 
+/*
+	Delete SMS message(s) from specified memory type.
+*/
 static PyObject *gnokii_deletesms(PyObject *self, PyObject *args)
 {
 	gn_sms message;
@@ -526,8 +560,11 @@ static PyObject *gnokii_deletesms(PyObject *self, PyObject *args)
 	Py_RETURN_NONE;
 }
 
-/* Settings */
+/* ---------- Settings ---------- */
 
+/*
+	Define module's methods.
+*/
 static PyMethodDef GnokiiMethods[] = {
 	{"dialvoice", gnokii_dialvoice, METH_VARARGS, "Initiate voice call."},
 	{"answercall", gnokii_answercall, METH_VARARGS, "Answer an incoming call."},
@@ -539,6 +576,9 @@ static PyMethodDef GnokiiMethods[] = {
 	{NULL, NULL, 0, NULL}
 };
 
+/*
+	Initialize Python module.
+*/
 PyMODINIT_FUNC
 initgnokii(void)
 {

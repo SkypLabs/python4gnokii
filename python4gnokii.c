@@ -91,6 +91,7 @@ static PyObject *gnokii_dialvoice(PyObject *self, PyObject *args)
 
 	if ((error = gn_call_dial(&call_id, data, state)) != GN_ERR_NONE)
 	{
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "Call failed");
 		return NULL;
 	}
@@ -120,6 +121,7 @@ static PyObject *gnokii_answercall(PyObject *self, PyObject *args)
 
 	if (callinfo.call_id < 0)
 	{
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "Invalid call id");
 		return NULL;
 	}
@@ -131,6 +133,7 @@ static PyObject *gnokii_answercall(PyObject *self, PyObject *args)
 
 	if (error != GN_ERR_NONE)
 	{
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "Answer call failed");
 		return NULL;
 	}
@@ -161,6 +164,7 @@ static PyObject *gnokii_senddtmf(PyObject *self, PyObject *args)
 
 	if (error != GN_ERR_NONE)
 	{
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "Sending DTMF failed");
 		return NULL;
 	}
@@ -190,6 +194,7 @@ static PyObject *gnokii_hangup(PyObject *self, PyObject *args)
 
 	if (callinfo.call_id < 0)
 	{
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "Invalid call id");
 		return NULL;
 	}
@@ -201,6 +206,7 @@ static PyObject *gnokii_hangup(PyObject *self, PyObject *args)
 
 	if (error != GN_ERR_NONE)
 	{
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "Hung up failed");
 		return NULL;
 	}
@@ -231,6 +237,7 @@ static PyObject *gnokii_sendsms(PyObject *self, PyObject *args)
 
 	if ((strlen(message) + 1) > sizeof(sms.user_data[0].u.text))
 	{
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "Message too long");
 		return NULL;
 	}
@@ -240,6 +247,7 @@ static PyObject *gnokii_sendsms(PyObject *self, PyObject *args)
 
 	if (sms.remote.type == GN_GSM_NUMBER_Alphanumeric)
 	{
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "Wrong data format");
 		return NULL;
 	}
@@ -256,6 +264,7 @@ static PyObject *gnokii_sendsms(PyObject *self, PyObject *args)
 	else
 	{
 		free(data->message_center);
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "Cannot read the SMSC number from your phone");
 		return NULL;
 	}
@@ -278,6 +287,7 @@ static PyObject *gnokii_sendsms(PyObject *self, PyObject *args)
 
 	if (error != GN_ERR_NONE)
 	{
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "Sending SMS failed");
 		return NULL;
 	}
@@ -316,18 +326,21 @@ static PyObject *gnokii_getsms(PyObject *self, PyObject *args)
 
 	if (message.memory_type == GN_MT_XX)
         {
+        	gnokii_close();
 		PyErr_SetString(GnokiiError, "Unknown memory type");
 		return NULL;
         }
 
 	if (start_message < 0)
 	{
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "Invalid start message");
 		return NULL;
 	}
 
 	if (end_message < 0)
 	{
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "Invalid end message");
 		return NULL;
 	}
@@ -335,6 +348,7 @@ static PyObject *gnokii_getsms(PyObject *self, PyObject *args)
 		end_message = start_message;
 	else if (end_message < start_message)
 	{
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "End value is less than start value");
 		return NULL;
 	}
@@ -412,6 +426,7 @@ static PyObject *gnokii_getsms(PyObject *self, PyObject *args)
 		}
 		else if (error == GN_ERR_INVALIDMEMORYTYPE)
 		{
+			gnokii_close();
 			PyErr_SetString(GnokiiError, "Unknown memory type");
 			return NULL;
 		}
@@ -459,18 +474,21 @@ static PyObject *gnokii_deletesms(PyObject *self, PyObject *args)
 
 	if (message.memory_type == GN_MT_XX)
         {
+        	gnokii_close();
 		PyErr_SetString(GnokiiError, "Unknown memory type");
 		return NULL;
         }
 
 	if (start_message < 0)
 	{
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "Invalid start message");
 		return NULL;
 	}
 
 	if (end_message < 0)
 	{
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "Invalid end message");
 		return NULL;
 	}
@@ -478,6 +496,7 @@ static PyObject *gnokii_deletesms(PyObject *self, PyObject *args)
 		end_message = start_message;
 	else if (end_message < start_message)
 	{
+		gnokii_close();
 		PyErr_SetString(GnokiiError, "End value is less than start value");
 		return NULL;
 	}
@@ -492,14 +511,13 @@ static PyObject *gnokii_deletesms(PyObject *self, PyObject *args)
 
 		if (error != GN_ERR_NONE)
 		{
+			gnokii_close();
+
 			if ((error == GN_ERR_INVALIDLOCATION) && (end_message == INT_MAX) && (count > start_message))
-			{
-				gnokii_close();
 				Py_RETURN_NONE;
-			}
 
 			PyErr_SetString(GnokiiError, "Deleting SMS failed");
-				return NULL;
+			return NULL;
 		}
         }
 

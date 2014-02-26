@@ -297,8 +297,8 @@ static PyObject *gnokii_getsms(PyObject *self, PyObject *args)
 	PyObject *remote_num = NULL, *smsc_num = NULL;
 	PyObject *msg_num = NULL, *nb_msg = NULL;
 	PyObject *message_text = NULL;
+	int start_message, end_message = 0, count;
 	unsigned char cont = 1, all = 0, messages_read = 0;
-	unsigned char start_message, end_message = 0, count;
 	unsigned char i = 0;
 	char *memory_type_string = NULL;
 	char folder_count = -1;
@@ -340,7 +340,7 @@ static PyObject *gnokii_getsms(PyObject *self, PyObject *args)
 	}
 	else if (end_message == INT_MAX)
 	{
-		unsigned char i;
+		unsigned char j;
 		gn_error e;
 
 		all = 1;
@@ -352,16 +352,16 @@ static PyObject *gnokii_getsms(PyObject *self, PyObject *args)
 
 		if (e == GN_ERR_NONE)
 		{
-			for (i = 0; i < folderlist.number; i++)
+			for (j = 0; j < folderlist.number; j++)
 			{
-				data->sms_folder = folderlist.folder + i;
+				data->sms_folder = folderlist.folder + j;
 
-				if (folderlist.folder_id[i] == gn_str2memory_type(memory_type_string))
+				if (folderlist.folder_id[j] == gn_str2memory_type(memory_type_string))
 				{
 					e = gn_sm_functions(GN_OP_GetSMSFolderStatus, data, state);
 
 					if (e == GN_ERR_NONE)
-						folder_count = folderlist.folder[i].number;
+						folder_count = folderlist.folder[j].number;
 				}
 			}
 		}
@@ -371,7 +371,7 @@ static PyObject *gnokii_getsms(PyObject *self, PyObject *args)
 	data->sms_folder = &folder;
 	data->sms_folder_list = &folderlist;
 	count = start_message;
-	PyObject* messages = PyTuple_New(end_message - start_message);
+	PyObject* messages = PyTuple_New(end_message - start_message + 1);
 
 	while (cont)
 	{
@@ -431,6 +431,8 @@ static PyObject *gnokii_getsms(PyObject *self, PyObject *args)
 		count++;
 		i++;
 	}
+
+	gnokii_close();
 
 	return messages;
 }

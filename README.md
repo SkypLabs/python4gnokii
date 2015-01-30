@@ -1,10 +1,10 @@
 # python4gnokii
 
-python4gnokii is a Python bindings for [Gnokii][1] project.
+python4gnokii is a Python bindings for the [Gnokii][1] project.
 
-## Dependancies
+## Dependencies
 
-To build and make the Python module works, you need the following elements :
+To build and make the Python module work, you need the following elements :
 
  * **libgnokii** and its headers
  * The **[setuptools][2]** package
@@ -25,7 +25,7 @@ To build and make the Python module works, you need the following elements :
 
 ## How to
 
-The best way to learn how does it work is to look at the examples available in the "examples" folder.
+The best way to learn how it works is to look at the examples available in the "examples" folder.
 
 ## License
 

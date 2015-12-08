@@ -1,14 +1,18 @@
 from distutils.core import setup, Extension
  
-module1 = Extension('gnokii',
+gnokii = Extension(
+	'gnokii',
 	libraries = ['gnokii'],
 	library_dirs = ['/usr/local/lib/'],
-	sources = ['python4gnokii.c'])
+	sources = ['python4gnokii.c']
+)
  
-setup (name = 'python4gnokii',
+setup(
+	name = 'python4gnokii',
 	version = '0.1.0',
-	description = 'Python for Gnokii',
+	description = 'Python bindings for the Gnokii library',
 	author = 'Paul-Emmanuel Raoul',
 	author_email = 'skyper@skyplabs.net',
-	url = 'http://blog.skyplabs.net',
-	ext_modules = [module1])
+	url = 'https://github.com/SkypLabs/python4gnokii',
+	ext_modules = [gnokii],
+)

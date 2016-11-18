@@ -25,12 +25,13 @@ To build and make the Python module work, you need the following elements :
 
 ## How to
 
-The best way to learn how it works is to look at the examples available in the "examples" folder.
+The best way to learn how it works is to look at the examples available in the [examples][3] folder.
 
 ## License
 
-[GPL version 3][3]
+[GPL version 3][4]
 
   [1]: http://gnokii.org/
   [2]: https://pypi.python.org/pypi/setuptools
-  [3]: https://www.gnu.org/licenses/gpl.txt "GPL version 3"
+  [3]: https://github.com/SkypLabs/python4gnokii/tree/master/examples
+  [4]: https://www.gnu.org/licenses/gpl.txt "GPL version 3"

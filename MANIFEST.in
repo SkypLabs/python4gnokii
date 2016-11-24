@@ -1,0 +1,3 @@
+include src/*.c
+include README.rst
+include LICENSE

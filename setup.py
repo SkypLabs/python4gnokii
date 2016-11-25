@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from setuptools import setup, Extension
 from os.path import dirname, abspath, join

@@ -1,0 +1,20 @@
+language: python
+
+python:
+  - 3.2
+  - 3.3
+  - 3.4
+  - 3.5
+
+deploy:
+  provider: pypi
+  distributions: sdist
+  user: skyplabs
+  password:
+    secure: "u89EhOQtejZ1Sxw8vnpLgGov5GVHPiiJjF0gnLEYzw5FTHMcO4+9HtLjxXNnjQTL6gXOnvLkqbAbKFv2qbM4N9i/7A2Cs79IvJFQ+dUGCIZbOQXf16REREcUz0sH2XuisazlIUdfquNzfbWlI+sUUxPRMkbgfwyb21ZdfbzcDzMSwzBHJGWegRFoHOjQU0xXfI2EysoR2rlV/gMWO0qcxCk+VQaLdziBa+gR4l/AIsUXduzR8H0FeVHDBBBR+kyATabdVVf6nKGgQyrtsTR/7XKhDCB+kfNv+TmjhynANx5D3NBhU4HzS/I9BRvtCLVQmStv97cHsgIWJMqr304+YBuEvSkpG3j0Xq05XV2MjSoWnJp9i88Yn12yleRkzJqmUy6yGsX+sTW+0zd//w85x3nsh/ZX1gzD7adkFQF+4ohOicBQhCAE2CDVnn7nleP2NhNOUZMIK1914deDEYOBwedUGIG1mDBEfJSsjmFEyIhHDgyZ4oFDmImMdvUUc1HKRNPbclJVLLCTIfBz71u9xjpx1xU2nVMvoPxWTN8MwwAQ9o4IQGVjQTHRk7rnGwPDER+mcrGoFN01kT6BlKyKZ3X8R0YklLX2URjoU5OVydRDc59zLp2hjp52rid0Aj6fEyIsxursLvrEQuxvgSjLrkm2hJFbwVOzAE7/Mmzup4Q="
+  on:
+    tags: true
+    repo: SkypLabs/python4gnokii
+    condition: $TRAVIS_PYTHON_VERSION = "3.5"
+
+script: python setup.py sdist

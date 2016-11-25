@@ -11,8 +11,8 @@ Dependencies
 To build and make the Python module work, you need the following
 elements :
 
--  **libgnokii** and its headers
--  The `**setuptools** <https://pypi.python.org/pypi/setuptools>`__
+-  libgnokii and its headers
+-  The `setuptools <https://pypi.python.org/pypi/setuptools>`__
    package
 
 On Fedora

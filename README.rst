@@ -2,6 +2,8 @@
 python4gnokii
 =============
 
+|Build Status|
+
 python4gnokii is a Python bindings for the
 `Gnokii <http://gnokii.org/>`__ project.
 
@@ -32,6 +34,16 @@ On Debian
 Installation
 ============
 
+With pip (recommanded)
+----------------------
+
+::
+
+    pip install python4gnokii
+
+From sources
+------------
+
 ::
 
     git clone git@github.com:SkypLabs/python4gnokii.git
@@ -50,3 +62,6 @@ License
 =======
 
 `GPL version 3 <https://www.gnu.org/licenses/gpl.txt>`__
+
+.. |Build Status| image:: https://travis-ci.org/SkypLabs/python4gnokii.svg
+   :target: https://travis-ci.org/SkypLabs/python4gnokii

@@ -18,7 +18,7 @@ gnokii = Extension(
 
 with open(join(DIR, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
- 
+
 setup(
     name = 'python4gnokii',
     version = VERSION,
@@ -35,8 +35,6 @@ setup(
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Programming Language :: C',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',

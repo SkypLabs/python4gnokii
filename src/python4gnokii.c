@@ -577,19 +577,32 @@ static PyMethodDef GnokiiMethods[] = {
 };
 
 /*
+ * Python module itself.
+ */
+static struct PyModuleDef gnokii_module =
+{
+    PyModuleDef_HEAD_INIT,
+    "gnokii",
+    "Python bindings for the Gnokii library",
+    -1,
+    GnokiiMethods
+};
+
+/*
     Initialize Python module.
 */
-PyMODINIT_FUNC
-initgnokii(void)
+PyMODINIT_FUNC PyInit_gnokii(void)
 {
     PyObject *m;
 
-    m = Py_InitModule("gnokii", GnokiiMethods);
+    m = PyModule_Create(&gnokii_module);
 
     if (m == NULL)
-        return;
+        return NULL;
 
     GnokiiError = PyErr_NewException("gnokii.error", NULL, NULL);
     Py_INCREF(GnokiiError);
     PyModule_AddObject(m, "error", GnokiiError);
+
+    return m;
 }

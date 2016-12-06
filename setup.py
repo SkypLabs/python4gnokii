@@ -5,8 +5,8 @@ from os.path import dirname, abspath, join
 from codecs import open
 
 DIR = dirname(abspath(__file__))
-VERSION = '0.2.0'
- 
+VERSION = '0.3.0'
+
 gnokii = Extension(
     'gnokii',
     libraries = ['gnokii'],

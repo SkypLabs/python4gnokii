@@ -2,7 +2,7 @@
 python4gnokii
 =============
 
-|Build Status|
+|Build Status| |Code Coverage|
 
 python4gnokii is a Python bindings for the
 `Gnokii <http://gnokii.org/>`__ project.
@@ -65,3 +65,5 @@ License
 
 .. |Build Status| image:: https://travis-ci.org/SkypLabs/python4gnokii.svg
    :target: https://travis-ci.org/SkypLabs/python4gnokii
+.. |Code Coverage| image:: https://api.codacy.com/project/badge/Grade/3989785db9e346a3a9c7f872dd0a61d8
+   :target: https://www.codacy.com/app/skyper/python4gnokii?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SkypLabs/python4gnokii&amp;utm_campaign=Badge_Grade

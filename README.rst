@@ -2,7 +2,7 @@
 python4gnokii
 =============
 
-|Build Status| |Code Coverage|
+|PyPI Package| |Build Status| |Code Coverage|
 
 python4gnokii is a Python bindings for the
 `Gnokii <http://gnokii.org/>`__ project.
@@ -11,25 +11,25 @@ Dependencies
 ============
 
 To build and make the Python module work, you need the following
-elements :
+elements:
 
--  libgnokii and its headers
--  The `setuptools <https://pypi.python.org/pypi/setuptools>`__
-   package
+- libgnokii and its headers
+- The `setuptools <https://pypi.python.org/pypi/setuptools>`__
+  package
 
 On Fedora
 ---------
 
 ::
 
-    yum install gnokii gnokii-devel python-setuptools
+    sudo dnf install gnokii gnokii-devel python3-setuptools
 
 On Debian
 ---------
 
 ::
 
-    aptitude install gnokii-cli libgnokii-dev python-setuptools
+    sudo apt install gnokii-cli libgnokii-dev python3-setuptools
 
 Installation
 ============
@@ -39,7 +39,7 @@ With pip (recommanded)
 
 ::
 
-    pip install python4gnokii
+    pip3 install --upgrade python4gnokii
 
 From sources
 ------------
@@ -48,7 +48,7 @@ From sources
 
     git clone git@github.com:SkypLabs/python4gnokii.git
     cd python4gnokii
-    python setup.py install
+    python3 setup.py install
 
 How to
 ======
@@ -67,3 +67,5 @@ License
    :target: https://travis-ci.org/SkypLabs/python4gnokii
 .. |Code Coverage| image:: https://api.codacy.com/project/badge/Grade/3989785db9e346a3a9c7f872dd0a61d8
    :target: https://www.codacy.com/app/skyper/python4gnokii?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SkypLabs/python4gnokii&amp;utm_campaign=Badge_Grade
+.. |PyPI Package| image:: https://badge.fury.io/py/python4gnokii.svg
+   :target: https://badge.fury.io/py/python4gnokii

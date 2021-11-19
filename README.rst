@@ -4,8 +4,10 @@ python4gnokii
 
 |PyPI Package| |Build Status| |Code Coverage|
 
-python4gnokii is a Python bindings for the
+python4gnokii is a Python binding of the
 `Gnokii <http://gnokii.org/>`__ project.
+
+This project is no more maintained.
 
 Dependencies
 ============
